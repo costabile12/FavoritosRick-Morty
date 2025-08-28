@@ -1,0 +1,187 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.cuerpo {
+    background-color: #333;
+}
+
+.title {
+    text-align: center;
+    margin: 20px 0 30px 0;
+    color:#ddd;
+}
+
+.contenedor {
+    width: 500px;
+    margin: auto;
+    border: 1px solid #216297;
+    padding: 20px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #fefefe;
+}
+
+p {
+    margin-bottom: 20px;
+}
+
+.btn-tema{
+    width: 130px;
+    height: 30px;
+    border-radius: 15px;
+    border: 1px solid #216297;
+    font-weight: 700;
+    font-style: italic;
+    cursor: pointer;
+    background-color: #eee;
+}
+
+.btn-tema:hover {
+    background-color: #216297;
+    color: white;
+    
+}
+
+.darkMode {
+    background-color: #333;
+    color: white;
+}
+
+.darkMode .btn-tema {
+    background-color: #216297;
+    color: white;
+    border-color: #fff;
+}
+
+.darkMode .btn-tema:hover {
+    background-color: #fff;
+    color: #216297;
+    border-color: #216297;
+}
+
+
+.contenedorPersonajes {
+    width: 90%;
+    margin: 40px auto 150px auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    -ms-grid-column: repeat(4, 1fr);
+    gap: 40px;
+}
+
+.contenedorPaginacion {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 100px;
+    background-color: #7529ab;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+}
+
+.btn-anterior, .btn-siguiente {
+    padding: 10px;
+    width:200px;
+    border-radius: 50px;
+    font-weight: bold;
+    background-color: #212997;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-anterior:hover, .btn-siguiente:hover {
+    background-color: #0e2b54;
+    cursor: pointer;
+}
+
+
+.overlay {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: #2726266a;
+}
+
+.overlay.active {
+    display: block;
+}
+
+.contenedorFavorites {
+    text-align: center;
+    position: fixed;
+    z-index: 1000;
+    width: 600px;
+    height: 100vh;
+    top: 0;
+    right: -600px;
+    color: #eee;
+    font-weight: 700;
+    background-color: #212997;
+    height: 100%;
+    padding: 20px 40px;
+    transition: right 0.3s ease;
+}
+.contenedorFavorites.active {
+    right: 0;
+}
+
+.listaPersonajes {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    list-style: none;
+}
+
+.cardPj{
+    width: 100%;
+    border: 1px solid white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.cardPj .btnDeletePj {
+    background-color: crimson;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+    
+}
+
+.cardPj .cardPj {
+    width: 100%;
+    height: 100%;
+}
+
+.containterImg {
+    
+    width: 100px;
+    height: 100px;
+}
+
+
+.containterImg .imagenPj {
+    height: 100%;
+    border-radius: 15px;
+}
+.containerCloseButton {
+    display: flex;
+    flex-direction: row-reverse;
+}
