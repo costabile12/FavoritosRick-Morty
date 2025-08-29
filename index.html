@@ -31,6 +31,7 @@
 
     <div class="contenedorPaginacion">
         <button class=" btn-anterior">Anterior</button>
+        <span class="contadorNumberPage"></span>
         <button class=" btn-siguiente">Siguiente</button>
     </div>
     
@@ -44,29 +45,29 @@
         <h2>Personajes Favoritos</h2>
     
         <ul class="listaPersonajes">
-            <li>
-                <div class="cardPj">
-                    <div class="containterImg">
-
-                    </div>
-                    <h4>Nombre</h4>
-                    <button class="btnDeletePj" onclick="borrarDeFavoritos(id)">x</button>
-                </div>
-            </li>
-
-
-
-            <div class="cardPj">
-                <div class="containterImg">
-                    <img src="" alt="" class="imagenPj">
-                    
-                </div>
-                <h4>Nombre</h4>
-                <button class="btnDeletePj">x</button>
-            </div>
+            
         </ul>
 
     </div> 
+
+
+    <div class="infoModal bg-light w-50 p-5 m-auto rounded-4">
+        <div class="row text-end">
+            <div class="col">
+                <button class="btn btn-danger rounded-3 closeModal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+        </div>
+        <div class="row text-center">
+            <div class="col boxData">
+                <h1>Titulo</h1>
+                <p>Datos</p>
+            </div>
+        </div>
+
+    </div>
 
     <script src="./app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>

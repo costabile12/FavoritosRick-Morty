@@ -8,11 +8,15 @@ const btnSaludar = document.querySelector("#btn-saludar");
 const contenedorPersonajes = document.querySelector(".contenedorPersonajes");
 const btnAnterior = document.querySelector(".btn-anterior");
 const btnSiguiente = document.querySelector(".btn-siguiente");
+const numberPage = document.querySelector(".contadorNumberPage")
 const btnFavoritos = document.querySelector(".favoritos");
 const overlay = document.querySelector(".overlay");
 const containerFavorites = document.querySelector(".contenedorFavorites");
 const btnCloseFavorites = document.querySelector(".closeFavorites");
 const containerFavoritesList = document.querySelector(".listaPersonajes");
+const btnCloseModal = document.querySelector(".closeModal");
+const containerModal = document.querySelector(".infoModal");
+const containerDataModal = document.querySelector(".boxData")
 
 let open = false;
 let tema = false;
@@ -24,155 +28,144 @@ const saludar = () => {
     alert("Hola Mundo!!!")
 }
 
-//Obtengo el Local storage
+// Obtengo el LocalStorage
 addEventListener("DOMContentLoaded", () => {
-    if  ( localStorage.getItem("tema") === "oscuro" ){
+    if (localStorage.getItem("tema") === "oscuro") {
         contenedor.classList.add("darkMode");
     }
     let numPage = localStorage.getItem("numeroPage");
-    
-    if (numPage){
+
+    if (numPage) {
         contadorPaginacion = Number(numPage);
         getPersonajes(contadorPaginacion);
-    }else {
-        getPersonajes(MIN_PAGE)
+    } else {
+        
+        getPersonajes(MIN_PAGE);
     }
 
-    cargarPersonajesFavoritos();
     
-})
+    numberPage.innerText = contadorPaginacion;
 
-//Obtengo los PJ y los cargo de forma dinamica
+    cargarPersonajesFavoritos();
+});
+
+// Obtengo los personajes y los cargo dinámicamente
 const getPersonajes = async (numberPage = MIN_PAGE) => {
     try {
         let response = await fetch(`${API}/character/?page=${numberPage}`);
-        
-        if (response.ok){
+        if (response.ok) {
             let personajes = await response.json();
-            console.log(personajes);
-
-            listaPersonajes = personajes.results
+            listaPersonajes = personajes.results;
 
             // Limpio el contenedor antes de cargar los nuevos personajes
             contenedorPersonajes.innerHTML = "";
 
             personajes.results.forEach(personaje => {
-                //console.log(personaje.name)
                 let card = document.createElement("div");
-
-                card.innerHTML = `<div class="card cardPersonaje" style="width: 18rem;">
-            <img src="${personaje.image}" class="card-img-top" alt="${personaje.name}">
-            <div class="card-body text-center">
-                <h5 class="card-title">${personaje.name}</h5>
-                <p class="card-text">${personaje.status}-${personaje.species}-${personaje.gender}</p>
-                <button type="button" class="btn btn-dark" onclick="addFavoriteList(${personaje.id})">Agregar a favoritos</button>
-                
-            </div>
-        </div>`
-
+                card.innerHTML = `
+                    <div class="card cardPersonaje" style="width: 18rem;">
+                        <img src="${personaje.image}" class="card-img-top" alt="${personaje.name}">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">${personaje.name}</h5>
+                            <p class="card-text">${personaje.status} - ${personaje.species} - ${personaje.gender}</p>
+                            <div class="row mb-2">
+                                <div class="col">
+                                    <button type="button" class="btn btn-dark w-75" onclick="addFavoriteList(${personaje.id})">Agregar a favoritos</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <button type="button" class="btn btn-dark w-75 masInfo" onclick="openInfoCharacter(${personaje.id})">+Info</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
                 contenedorPersonajes.appendChild(card);
-
-
             });
-
-            
         }
-        
-
-        
-        
-
-
-
     } catch (error) {
-        console.log(error)
+        console.log(error);
     }
 }
 
-// Boton que cambia de tema
+// Botón que cambia de tema
 btnTema.addEventListener("click", () => {
-    tema = !tema; 
+    tema = !tema;
     if (tema) {
         contenedor.classList.add("darkMode");
     } else {
         contenedor.classList.remove("darkMode");
     }
 
-    //Guardar en el local storage
-    if (contenedor.classList.contains("darkMode")){
+    // Guardar en LocalStorage
+    if (contenedor.classList.contains("darkMode")) {
         localStorage.setItem("tema", "oscuro");
-    }else {
+    } else {
         localStorage.setItem("tema", "claro");
     }
 });
 
-// Boton que muestra un alert saludando
+// Botón que muestra un alert saludando
 btnSaludar.addEventListener("click", () => {
     saludar();
-})
+});
 
-// Boton que cambia de pagina
+// Botón que cambia a la página anterior (carrusel infinito)
 btnAnterior.addEventListener("click", () => {
-    if(contadorPaginacion>MIN_PAGE){
+    if (contadorPaginacion > MIN_PAGE) {
         contadorPaginacion--;
-        getPersonajes(contadorPaginacion);
-        localStorage.setItem("numeroPage", contadorPaginacion);
-    }else{
-        return
+    } else {
+        contadorPaginacion = MAX_PAGE; // vuelve al final si estaba en la primera
     }
-    
+    numberPage.innerText = contadorPaginacion;
+    getPersonajes(contadorPaginacion);
+    localStorage.setItem("numeroPage", contadorPaginacion);
 });
 
-// Boton que cambia de pagina
+// Botón que cambia a la página siguiente (carrusel infinito)
 btnSiguiente.addEventListener("click", () => {
-    if(contadorPaginacion<MAX_PAGE){
+    if (contadorPaginacion < MAX_PAGE) {
         contadorPaginacion++;
-        getPersonajes(contadorPaginacion);
-        localStorage.setItem("numeroPage", contadorPaginacion);
+    } else {
+        contadorPaginacion = MIN_PAGE; // vuelve al inicio si estaba en la última
     }
+    numberPage.innerText = contadorPaginacion;
+    getPersonajes(contadorPaginacion);
+    localStorage.setItem("numeroPage", contadorPaginacion);
 });
 
-// Boton que abre la seccion de favoritos
 
+// Botón que abre favoritos
 btnFavoritos.addEventListener("click", () => {
-    
-    if (open === false){
+    if (!open) {
         overlay.classList.add("active");
         containerFavorites.classList.add("active");
         open = true;
-        //console.log("abierto")
     }
-    
 });
 
 btnCloseFavorites.addEventListener("click", () => {
-    if (open === true) {
+    if (open) {
         overlay.classList.remove("active");
         containerFavorites.classList.remove("active");
         open = false;
-        //console.log("cerrado")
     }
 });
 
+// Agregar a favoritos
 const addFavoriteList = (id) => {
     let personaje = listaPersonajes.find((p) => p.id === id);
-
     if (personaje) {
-        //console.log(personaje.name)
-    
-
-        if(!listaFavoritos.some((fav) => fav.id === personaje.id)) {
+        if (!listaFavoritos.some((fav) => fav.id === personaje.id)) {
             listaFavoritos.push(personaje);
             localStorage.setItem("favoritos", JSON.stringify(listaFavoritos));
+            alert("Se agregó el personaje a favoritos");
             renderizarFavoritos();
-        }else {
+        } else {
             alert("Ya está en favoritos");
         }
     }
-
 }
-
-
 
 const cargarPersonajesFavoritos = () => {
     let personajesFavoritos = localStorage.getItem("favoritos");
@@ -181,11 +174,9 @@ const cargarPersonajesFavoritos = () => {
 };
 
 const renderizarFavoritos = () => {
-    containerFavoritesList.innerHTML = ""; // Limpio lista antes de renderizar
-
+    containerFavoritesList.innerHTML = "";
     listaFavoritos.forEach(favorito => {
         let card = document.createElement("li");
-
         card.innerHTML = `
             <div class="cardPj">
                 <div class="containterImg">
@@ -194,7 +185,6 @@ const renderizarFavoritos = () => {
                 <h4>${favorito.name}</h4>
                 <button class="btnDeletePj" onclick="borrarDeFavoritos(${favorito.id})">x</button>
             </div>`;
-
         containerFavoritesList.appendChild(card);
     });
 };
@@ -203,8 +193,43 @@ const borrarDeFavoritos = (id) => {
     listaFavoritos = listaFavoritos.filter(personaje => personaje.id !== id);
     localStorage.setItem("favoritos", JSON.stringify(listaFavoritos));
     renderizarFavoritos();
-
 };
+
+// Modal de +Info
+const openInfoCharacter = async (id) => {
+    try {
+        let response = await fetch(`${API}/character/${id}`);
+        if (response.ok) {
+            let personaje = await response.json();
+
+            containerDataModal.innerHTML = `
+                <div class="card cardModal text-center mt-3 p-3">
+                    <img src="${personaje.image}" alt="${personaje.name}" class="modalImg mb-3 ms-auto me-auto" style="width:200px; border-radius:10px;">
+                    <h3>${personaje.name}</h3>
+                    <p><b>Status:</b> ${personaje.status}</p>
+                    <p><b>Species:</b> ${personaje.species}</p>
+                    <p><b>Gender:</b> ${personaje.gender}</p>
+                    <p><b>Origin:</b> ${personaje.origin.name}</p>
+                    <p><b>Location:</b> ${personaje.location.name}</p>
+                </div>
+            `;
+
+            overlay.classList.add("active");
+            containerModal.classList.add("active");
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+const closeModal = () => {
+    overlay.classList.remove("active");
+    containerModal.classList.remove("active");
+};
+
+btnCloseModal.addEventListener("click", closeModal);
+
+
 
 // const contenedor = document.querySelector(".contenedor");
 // const btnTema = document.querySelector("#btn-tema");
